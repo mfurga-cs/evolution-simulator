@@ -11,7 +11,7 @@ public interface World {
     <T extends Entity> List<T> getEntitiesByType(Class<T> klass);
     List<Entity> getEntitiesByPosition(Vector2D position);
 
-    public void place(Entity entity);
+    public boolean place(Entity entity);
     public void remove(Entity entity);
 
     public boolean canMoveTo(Vector2D position);

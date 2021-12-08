@@ -1,14 +1,11 @@
-import model.entity.impl.Animal;
-import model.world.World;
+import model.simulation.Simulation;
 import model.world.impl.BoundaryWord;
 
 public class App {
     public static void main(String[] args) {
 
-        World world = new BoundaryWord();
+        Simulation engine = new Simulation(new BoundaryWord());
+        engine.run();
 
-        world.place(new Animal(world));
-
-        System.out.println(world.getAllEntities());
     }
 }

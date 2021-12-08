@@ -50,26 +50,6 @@ public class Genotype {
         return genotype;
     }
 
-    public int getCommonGene() {
-        int counterMax = 0;
-        int counter = 0;
-        int gene = -1;
-
-        for (int i = 1; i < GENOTYPE_LENGTH; i++) {
-            if (this.genes[i - 1] == this.genes[i]) {
-                counter++;
-                if (counter > counterMax) {
-                    counterMax = counter;
-                    gene = this.genes[i];
-                }
-            } else {
-                counter = 0;
-            }
-        }
-
-        return gene;
-    }
-
     public int getAt(int index) {
         if (index < 0 || index >= GENOTYPE_LENGTH) {
             throw new IllegalArgumentException("Index must be between 0 and " + (GENOTYPE_LENGTH - 1));

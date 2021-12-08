@@ -49,4 +49,9 @@ public abstract class BaseEntity implements Entity {
             observer.onPositionChange(this, oldPosition, position);
         }
     }
+
+    @Override
+    public String toString() {
+        return "E";
+    }
 }

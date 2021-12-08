@@ -13,7 +13,7 @@ public class Vector2D {
     }
 
     public static Vector2D add(Vector2D a, Vector2D b) {
-        return new Vector2D(a.x + b.x, b.y + b.y);
+        return new Vector2D(a.x + b.x, a.y + b.y);
     }
 
     public int getX() {
@@ -43,6 +43,6 @@ public class Vector2D {
 
     @Override
     public String toString() {
-        return "Vector2D(" + this.x + ", " + this.y + ")";
+        return "(" + this.x + ", " + this.y + ")";
     }
 }

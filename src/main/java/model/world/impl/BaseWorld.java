@@ -2,8 +2,11 @@ package model.world.impl;
 
 import model.entity.Entity;
 import model.entity.EntityObserver;
+import model.entity.impl.Grass;
+import model.utils.Logger;
 import model.utils.Vector2D;
 import model.world.World;
+import model.world.WorldDrawer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,8 +16,8 @@ import java.util.stream.Collectors;
 
 public abstract class BaseWorld implements World, EntityObserver {
 
-    private static final int WIDTH = 20;
-    private static final int HEIGHT = 20;
+    private static final int WIDTH = 10;
+    private static final int HEIGHT = 10;
 
     protected int width;
     protected int height;
@@ -22,6 +25,8 @@ public abstract class BaseWorld implements World, EntityObserver {
     protected Map<Vector2D, List<Entity>> entities = new HashMap<>();
 
     public BaseWorld() {
+        this.width = WIDTH;
+        this.height = HEIGHT;
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
                 Vector2D position = new Vector2D(x, y);
@@ -67,14 +72,15 @@ public abstract class BaseWorld implements World, EntityObserver {
     }
 
     @Override
-    public void place(Entity entity) {
-//        if (this.getEntitiesByPosition(entity.getPosition())
-//                .stream()
-//                .anyMatch(e -> e.getPriority() > entity.getPriority())) {
-//            return false;
-//        }
+    public boolean place(Entity entity) {
+        if (entity instanceof Grass && this.getEntitiesByPosition(entity.getPosition()).size() > 0) {
+            Logger.debug("Grass cannot be placed at " + entity.getPosition());
+            return false;
+        }
         this.entities.get(entity.getPosition()).add(entity);
         entity.addObserver(this);
+        Logger.debug("Entity added on " + entity.getPosition());
+        return true;
     }
 
     @Override
@@ -97,5 +103,10 @@ public abstract class BaseWorld implements World, EntityObserver {
     @Override
     public int getHeight() {
         return this.height;
+    }
+
+    @Override
+    public String toString() {
+        return new WorldDrawer(this).draw(new Vector2D(0, 0), new Vector2D(this.width - 1, this.height - 1));
     }
 }
