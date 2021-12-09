@@ -8,8 +8,11 @@ import java.util.List;
 public interface World {
 
     List<Entity> getAllEntities();
-    <T extends Entity> List<T> getEntitiesByType(Class<T> klass);
     List<Entity> getEntitiesByPosition(Vector2D position);
+    <T extends Entity> List<T> getEntitiesByType(Class<T> klass);
+    <T extends Entity> List<T> getEntitiesByTypeAndPosition(Class<T> klass, Vector2D position);
+
+    List<Vector2D> getFreePositionsBySection(Section section);
 
     public boolean place(Entity entity);
     public void remove(Entity entity);

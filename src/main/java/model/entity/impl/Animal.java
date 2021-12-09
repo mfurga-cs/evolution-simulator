@@ -26,30 +26,27 @@ public class Animal extends BaseEntity {
     }
 
     public Animal(World world, Vector2D position, Genotype genotype) {
-        this(world, position, genotype, Direction.random());
+        this(world, position, genotype, DEFAULT_ENERGY);
     }
 
-    public Animal(World world, Vector2D position, Genotype genotype, Direction direction) {
-        super(world, position, DEFAULT_ENERGY);
+    public Animal(World world, Vector2D position, Genotype genotype, int energy) {
+        this(world, position, genotype, energy, Direction.random());
+    }
+
+    public Animal(World world, Vector2D position, Genotype genotype, int energy, Direction direction) {
+        super(world, position, energy);
         this.direction = direction;
         this.genotype = genotype;
     }
 
-    public void moveOrRotate() {
-        if (this.direction.equals(Direction.NORTH) || this.direction.equals(Direction.SOUTH)) {
-            move();
-        } else {
-            rotate();
-        }
+    public void move() {
+        Direction direction = Direction.fromId(
+                this.genotype.getAt(ThreadLocalRandom.current().nextInt(0, Genotype.GENOTYPE_LENGTH)));
+        move(direction);
     }
 
-    private void rotate() {
-        Logger.debug("Animal is rotating");
-        this.direction = Direction.fromId(ThreadLocalRandom.current().nextInt(0, Genotype.GENOTYPE_LENGTH));
-    }
-
-    private void move() {
-        Vector2D unit = this.direction.toUnitVector();
+    private void move(Direction direction) {
+        Vector2D unit = direction.toUnitVector();
         Vector2D newPosition = this.world.positionNormalize(Vector2D.add(this.position, unit));
         if (this.world.canMoveTo(newPosition)) {
             Logger.debug("Animal is moving from " + this.position + " to " + newPosition);
@@ -72,7 +69,11 @@ public class Animal extends BaseEntity {
     }
 
     public Direction getDirection() {
-        return direction;
+        return this.direction;
+    }
+
+    public Genotype getGenotype() {
+        return this.genotype;
     }
 
     @Override

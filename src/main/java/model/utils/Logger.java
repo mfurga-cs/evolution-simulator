@@ -7,7 +7,7 @@ public class Logger {
     private static final int DEBUG = 2;
     private static final int LOG = 3;
 
-    private static final int verbosity = 2;
+    private static final int verbosity = 0;
 
     public static void debug(String message) {
         if (Logger.verbosity < DEBUG) {

@@ -5,6 +5,7 @@ import model.entity.EntityObserver;
 import model.entity.impl.Grass;
 import model.utils.Logger;
 import model.utils.Vector2D;
+import model.world.Section;
 import model.world.World;
 import model.world.WorldDrawer;
 
@@ -18,21 +19,41 @@ public abstract class BaseWorld implements World, EntityObserver {
 
     private static final int WIDTH = 10;
     private static final int HEIGHT = 10;
+    private static final int JUNGLE_RATIO = 30;
 
     protected int width;
     protected int height;
 
     protected Map<Vector2D, List<Entity>> entities = new HashMap<>();
+    protected Map<Vector2D, Section> sections = new HashMap<>();
 
     public BaseWorld() {
         this.width = WIDTH;
         this.height = HEIGHT;
+
+        int jungleMinX = (WIDTH / 2) - (WIDTH * JUNGLE_RATIO / 200);
+        int jungleMaxX = (WIDTH / 2) + (WIDTH * JUNGLE_RATIO / 200);
+        int jungleMinY = (HEIGHT / 2) - (HEIGHT * JUNGLE_RATIO / 200);
+        int jungleMaxY = (HEIGHT / 2) + (HEIGHT * JUNGLE_RATIO / 200);
+
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
                 Vector2D position = new Vector2D(x, y);
                 this.entities.put(position, new ArrayList<>());
+
+                if (x >= jungleMinX && x <= jungleMaxX &&
+                    y >= jungleMinY && y <= jungleMaxY) {
+                    this.sections.put(position, Section.JUNGLE);
+                } else {
+                    this.sections.put(position, Section.STEPPE);
+                }
             }
         }
+
+//        System.out.println("BOARD [" + WIDTH + ", " + HEIGHT + "]");
+//        System.out.println("JUNGLE X [" + jungleMinX + ", " + jungleMaxX + "]");
+//        System.out.println("JUNGLE Y [" + jungleMinY + ", " + jungleMaxY + "]");
+
     }
 
     @Override
@@ -41,6 +62,16 @@ public abstract class BaseWorld implements World, EntityObserver {
                 .values()
                 .stream()
                 .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Entity> getEntitiesByPosition(Vector2D position) {
+        return this.entities
+                .values()
+                .stream()
+                .flatMap(List::stream)
+                .filter(e -> e.getPosition().equals(position))
                 .collect(Collectors.toList());
     }
 
@@ -56,12 +87,24 @@ public abstract class BaseWorld implements World, EntityObserver {
     }
 
     @Override
-    public List<Entity> getEntitiesByPosition(Vector2D position) {
+    public <T extends Entity> List<T> getEntitiesByTypeAndPosition(Class<T> klass, Vector2D position) {
         return this.entities
                 .values()
                 .stream()
                 .flatMap(List::stream)
                 .filter(e -> e.getPosition().equals(position))
+                .filter(e -> e.getClass().equals(klass))
+                .map(e -> (T) e)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Vector2D> getFreePositionsBySection(Section section) {
+        return this.sections
+                .keySet()
+                .stream()
+                .filter(v -> this.entities.get(v).size() == 0)
+                .filter(v -> this.sections.get(v).equals(section))
                 .collect(Collectors.toList());
     }
 
