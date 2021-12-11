@@ -1,7 +1,9 @@
 package model.genotype;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class Genotype {
 
@@ -76,6 +78,6 @@ public class Genotype {
 
     @Override
     public String toString() {
-        return "Genotype{"+ Arrays.toString(genes) + "}";
+        return Arrays.stream(this.genes).mapToObj(String::valueOf).collect(Collectors.joining(""));
     }
 }

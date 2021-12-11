@@ -18,6 +18,7 @@ public class Simulation implements Engine {
 
     private final SimulationConfig config;
     private final World world;
+    private int day = 0;
 
     public Simulation(SimulationConfig config, Class<? extends World> world) {
         this.config = config;
@@ -78,7 +79,7 @@ public class Simulation implements Engine {
     }
 
     public void nextPeriod() {
-        System.out.println("NEXT PERIOD!");
+        this.day++;
         this.growGrass();
         this.moveAnimals();
         this.eatGrassByAnimals();
@@ -160,5 +161,9 @@ public class Simulation implements Engine {
             this.world.place(new Animal(this.world, energy, position, genotype));
             Logger.debug("Rozmnażanie!!!");
         }
+    }
+
+    public int getDay() {
+        return this.day;
     }
 }

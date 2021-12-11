@@ -76,15 +76,11 @@ public class SettingsController {
             Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setHeight(1000);
-            stage.setWidth(1000);
-
+            scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
             stage.show();
-
 
             simulationController.start();
         } catch (Exception e) {
-            System.out.println("Exception!!!!!");
             System.out.println(e.getMessage());
         }
 

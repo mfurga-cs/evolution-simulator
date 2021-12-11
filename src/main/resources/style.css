@@ -8,6 +8,18 @@
 
 .button {
     -fx-padding: 10;
+    -fx-border: 1px solid #ddd;
+}
+
+.title {
+    -fx-font-size: 24px !important;
+    -fx-font-weight: bold !important;
+    -fx-padding: 5px 0 !important;
+}
+
+#infiniteBox Label, #boundaryBox Label {
+    -fx-font-size: 16px;
+    -fx-padding: 2px 0;
 }
 
 
