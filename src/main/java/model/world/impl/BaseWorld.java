@@ -3,7 +3,6 @@ package model.world.impl;
 import model.entity.Entity;
 import model.entity.EntityObserver;
 import model.entity.impl.Grass;
-import model.utils.Logger;
 import model.utils.Vector2D;
 import model.world.Section;
 import model.world.World;
@@ -108,12 +107,10 @@ public abstract class BaseWorld implements World, EntityObserver {
     @Override
     public boolean place(Entity entity) {
         if (entity instanceof Grass && this.getEntitiesByPosition(entity.getPosition()).size() > 0) {
-            Logger.debug("Grass cannot be placed at " + entity.getPosition());
             return false;
         }
         this.entities.get(entity.getPosition()).add(entity);
         entity.addObserver(this);
-        Logger.debug("Entity added on " + entity.getPosition());
         return true;
     }
 

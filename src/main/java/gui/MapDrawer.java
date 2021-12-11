@@ -2,13 +2,8 @@ package gui;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
 import model.simulation.Simulation;
 import model.world.Section;
 
@@ -49,66 +44,10 @@ public class MapDrawer {
 
     }
 
-
-    //    public Canvas getCanvas() {
-//        Canvas canvas = new Canvas(500, 500);
-//        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-//
-//        for (int x = 0; x < 30; x++) {
-//            for (int y = 0; y < 30; y++) {
-//                drawSquare(graphicsContext, x, y, Color.WHITE, Color.SILVER);
-//            }
-//        }
-//
-//        return canvas;
-//    }
-
-
     private void drawSquare(int x, int y, Paint fill) {
-        double hFactor = 5;
-        double vFactor = 5;
-
         GraphicsContext gc = this.canvas.getGraphicsContext2D();
-
         gc.setLineWidth(2);
-//        gc.setStroke(stroke);
         gc.setFill(fill);
         gc.fillRect(x * this.blockFactor, y * this.blockFactor, this.blockFactor, this.blockFactor);
-//        gc.strokeRect(x * this.blockFactor, y * this.blockFactor, this.blockFactor, this.blockFactor);
     }
-
-
-    public static GridPane start() {
-        GridPane grid = new GridPane();
-        grid.setGridLinesVisible(true);
-
-
-        int width = 30;
-        int height = 30;
-
-        for (int x = 0 ; x < width ; x++) {
-            ColumnConstraints cc = new ColumnConstraints(20);
-            grid.getColumnConstraints().add(cc);
-        }
-
-        for (int y = 0 ; y < height ; y++) {
-            RowConstraints rc = new RowConstraints(20);
-            grid.getRowConstraints().add(rc);
-        }
-
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                StackPane stackPane = new StackPane();
-
-                Rectangle rectangle = new Rectangle(2, 2);
-                rectangle.setStroke(Color.YELLOW);
-                stackPane.getChildren().add(rectangle);
-
-                grid.add(rectangle, x, y, 1, 1);
-            }
-        }
-
-        return grid;
-    }
-
 }

@@ -1,7 +1,6 @@
 package model.genotype;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 

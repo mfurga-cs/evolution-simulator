@@ -3,7 +3,6 @@ package model.simulation;
 import model.entity.impl.Animal;
 import model.entity.impl.Grass;
 import model.genotype.Genotype;
-import model.utils.Logger;
 import model.utils.Vector2D;
 import model.world.Section;
 import model.world.World;
@@ -159,7 +158,6 @@ public class Simulation implements Engine {
             int ratio = Genotype.GENOTYPE_LENGTH * animal1.getEnergy() / (animal1.getEnergy() + animal2.getEnergy());
             Genotype genotype = Genotype.mix(animal1.getGenotype(), animal2.getGenotype(), ratio);
             this.world.place(new Animal(this.world, energy, position, genotype));
-            Logger.debug("Rozmnażanie!!!");
         }
     }
 

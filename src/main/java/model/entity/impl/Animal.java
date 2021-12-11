@@ -4,7 +4,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import model.entity.Direction;
 import model.genotype.Genotype;
-import model.utils.Logger;
 import model.utils.Vector2D;
 import model.world.World;
 
@@ -44,10 +43,7 @@ public class Animal extends BaseEntity {
         Vector2D unit = direction.toUnitVector();
         Vector2D newPosition = this.world.positionNormalize(Vector2D.add(this.position, unit));
         if (this.world.canMoveTo(newPosition)) {
-            Logger.debug("Animal is moving from " + this.position + " to " + newPosition);
             this.setPosition(newPosition);
-        } else {
-            Logger.debug("Animal cannot move from " + this.position + " to " + newPosition);
         }
     }
 
