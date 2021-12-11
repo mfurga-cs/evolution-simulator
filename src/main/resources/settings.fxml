@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox id="settings" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="468.0" prefWidth="555.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SettingsController">
+   <children>
+      <VBox prefHeight="435.0" prefWidth="555.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label styleClass="label" text="Width of the map" />
+                  <TextField fx:id="mapWidth" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label styleClass="label" text="Height of the map" />
+                  <TextField fx:id="mapHeight" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label styleClass="label" text="Start animals" />
+                  <TextField fx:id="startAnimals" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label styleClass="label" text="Start grass" />
+                  <TextField fx:id="startGrass" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="555.0">
+               <children>
+                  <Label styleClass="label" text="Initial animal energy" />
+                  <TextField fx:id="initialAnimalEnergy" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="555.0">
+               <children>
+                  <Label styleClass="label" text="Initial grass energy" />
+                  <TextField fx:id="initialGrassEnergy" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="555.0">
+               <children>
+                  <Label styleClass="label" text="Move energy " />
+                  <TextField fx:id="moveEnergy" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="555.0">
+               <children>
+                  <Label styleClass="label" text="Jungle ratio to the map [%]" />
+                  <Slider fx:id="jungleRatio" showTickLabels="true" showTickMarks="true" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <HBox prefHeight="151.0" prefWidth="555.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#start" text="Start symulation" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

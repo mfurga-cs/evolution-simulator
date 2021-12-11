@@ -1,5 +1,6 @@
 package model.entity;
 
+import javafx.scene.paint.Paint;
 import model.utils.Vector2D;
 
 public interface Entity {
@@ -11,4 +12,5 @@ public interface Entity {
     void addObserver(EntityObserver observer);
     void removeObserver(EntityObserver observer);
 
+    Paint getColor();
 }

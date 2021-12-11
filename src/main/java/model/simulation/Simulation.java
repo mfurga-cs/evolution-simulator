@@ -7,36 +7,78 @@ import model.utils.Logger;
 import model.utils.Vector2D;
 import model.world.Section;
 import model.world.World;
+import model.world.impl.BoundaryWord;
+import model.world.impl.InfiniteWorld;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Simulation implements Engine {
 
+    private final SimulationConfig config;
     private final World world;
 
-    public Simulation(World world) {
-        this.world = world;
+    public Simulation(SimulationConfig config, Class<? extends World> world) {
+        this.config = config;
+        if (world == BoundaryWord.class) {
+            this.world = new BoundaryWord(config.mapWidth, config.mapHeight, config.jungleRatio);
+        } else {
+            this.world = new InfiniteWorld(config.mapWidth, config.mapHeight, config.jungleRatio);
+        }
+        this.init();
+    }
+
+    public World getWorld() {
+        return this.world;
+    }
+
+    private void init() {
+        this.initGrass();
+        this.initAnimals();
     }
 
     @Override
     public void run() {
-        for (int i = 0; i < 40; i++) {
-            this.world.place(new Animal(this.world));
-        }
+        this.initGrass();
+        this.initAnimals();
 
-        for (int i = 0; i < 30; i++) {
-            this.world.place(new Grass(this.world));
+        for (int i = 0; i < 10; i++) {
+            nextPeriod();
         }
-
-        System.out.println(this.world);
-        nextPeriod();
-        System.out.println(this.world);
-        nextPeriod();
-        System.out.println(this.world);
     }
 
-    private void nextPeriod() {
+    private void initAnimals() {
+        for (int i = 0; i < this.config.startAnimals; i++) {
+            this.world.place(new Animal(this.world, this.config.initialAnimalEnergy));
+        }
+    }
+
+    private void initGrass() {
+        List<Vector2D> junglePositions = this.world.getFreePositionsBySection(Section.JUNGLE);
+        List<Vector2D> steppePositions = this.world.getFreePositionsBySection(Section.STEPPE);
+
+        Collections.shuffle(junglePositions);
+        Collections.shuffle(steppePositions);
+
+        int maxJungle = 3 * this.config.startGrass / 4;
+        int maxSteppe = this.config.startGrass / 4;
+
+        for (Vector2D junglePosition: junglePositions) {
+            maxJungle--;
+            if (maxJungle < 0) break;
+            this.world.place(new Grass(this.world, this.config.initialGrassEnergy, junglePosition));
+        }
+
+        for (Vector2D steppePosition: steppePositions) {
+            maxSteppe--;
+            if (maxSteppe < 0) break;
+            this.world.place(new Grass(this.world, this.config.initialGrassEnergy, steppePosition));
+        }
+    }
+
+    public void nextPeriod() {
+        System.out.println("NEXT PERIOD!");
         this.growGrass();
         this.moveAnimals();
         this.eatGrassByAnimals();
@@ -49,12 +91,15 @@ public class Simulation implements Engine {
         List<Vector2D> junglePositions = this.world.getFreePositionsBySection(Section.JUNGLE);
         List<Vector2D> steppePositions = this.world.getFreePositionsBySection(Section.STEPPE);
 
+        Collections.shuffle(junglePositions);
+        Collections.shuffle(steppePositions);
+
         if (junglePositions.size() > 0) {
-            this.world.place(new Grass(this.world, junglePositions.get(0)));
+            this.world.place(new Grass(this.world, this.config.initialGrassEnergy, junglePositions.get(0)));
         }
 
         if (steppePositions.size() > 0) {
-            this.world.place(new Grass(this.world, steppePositions.get(0)));
+            this.world.place(new Grass(this.world, this.config.initialGrassEnergy, steppePositions.get(0)));
         }
     }
 
@@ -80,7 +125,7 @@ public class Simulation implements Engine {
 
     private void decreaseAnimalsEnergy() {
         this.world.getEntitiesByType(Animal.class)
-                .forEach(a -> a.reduceEnergy(10));
+                .forEach(a -> a.reduceEnergy(this.config.moveEnergy));
     }
 
     private void removeDeadAnimals() {
@@ -112,7 +157,7 @@ public class Simulation implements Engine {
 
             int ratio = Genotype.GENOTYPE_LENGTH * animal1.getEnergy() / (animal1.getEnergy() + animal2.getEnergy());
             Genotype genotype = Genotype.mix(animal1.getGenotype(), animal2.getGenotype(), ratio);
-            this.world.place(new Animal(this.world, position, genotype, energy));
+            this.world.place(new Animal(this.world, energy, position, genotype));
             Logger.debug("Rozmnażanie!!!");
         }
     }

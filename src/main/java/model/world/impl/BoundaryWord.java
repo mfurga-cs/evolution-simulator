@@ -4,8 +4,8 @@ import model.utils.Vector2D;
 
 public class BoundaryWord extends BaseWorld {
 
-    public BoundaryWord() {
-        super();
+    public BoundaryWord(int width, int height, int jungleRatio) {
+        super(width, height, jungleRatio);
     }
 
     @Override

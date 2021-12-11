@@ -17,27 +17,23 @@ import java.util.stream.Collectors;
 
 public abstract class BaseWorld implements World, EntityObserver {
 
-    private static final int WIDTH = 10;
-    private static final int HEIGHT = 10;
-    private static final int JUNGLE_RATIO = 30;
-
     protected int width;
     protected int height;
 
     protected Map<Vector2D, List<Entity>> entities = new HashMap<>();
     protected Map<Vector2D, Section> sections = new HashMap<>();
 
-    public BaseWorld() {
-        this.width = WIDTH;
-        this.height = HEIGHT;
+    public BaseWorld(int width, int height, int jungleRatio) {
+        this.width = width;
+        this.height = height;
 
-        int jungleMinX = (WIDTH / 2) - (WIDTH * JUNGLE_RATIO / 200);
-        int jungleMaxX = (WIDTH / 2) + (WIDTH * JUNGLE_RATIO / 200);
-        int jungleMinY = (HEIGHT / 2) - (HEIGHT * JUNGLE_RATIO / 200);
-        int jungleMaxY = (HEIGHT / 2) + (HEIGHT * JUNGLE_RATIO / 200);
+        int jungleMinX = (width / 2) - (width * jungleRatio / 200);
+        int jungleMaxX = (width / 2) + (width * jungleRatio / 200);
+        int jungleMinY = (height / 2) - (height * jungleRatio / 200);
+        int jungleMaxY = (height / 2) + (height * jungleRatio / 200);
 
-        for (int x = 0; x < WIDTH; x++) {
-            for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 Vector2D position = new Vector2D(x, y);
                 this.entities.put(position, new ArrayList<>());
 
@@ -49,11 +45,6 @@ public abstract class BaseWorld implements World, EntityObserver {
                 }
             }
         }
-
-//        System.out.println("BOARD [" + WIDTH + ", " + HEIGHT + "]");
-//        System.out.println("JUNGLE X [" + jungleMinX + ", " + jungleMaxX + "]");
-//        System.out.println("JUNGLE Y [" + jungleMinY + ", " + jungleMaxY + "]");
-
     }
 
     @Override

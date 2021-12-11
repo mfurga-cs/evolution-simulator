@@ -1,0 +1,13 @@
+#settings {
+    -fx-padding: 40;
+}
+
+.label {
+    -fx-min-width: 200;
+}
+
+.button {
+    -fx-padding: 10;
+}
+
+

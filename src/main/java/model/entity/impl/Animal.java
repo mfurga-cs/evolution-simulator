@@ -1,5 +1,7 @@
 package model.entity.impl;
 
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import model.entity.Direction;
 import model.genotype.Genotype;
 import model.utils.Logger;
@@ -10,30 +12,23 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Animal extends BaseEntity {
 
-    private static final int ENTITY_PRIORITY = 1;
-    private static final int DEFAULT_ENERGY = 500;
-
     private Direction direction;
     private Genotype genotype;
 
-    public Animal(World world) {
-        this(world, new Vector2D(ThreadLocalRandom.current().nextInt(0, world.getWidth()),
-                                 ThreadLocalRandom.current().nextInt(0, world.getHeight())));
+    public Animal(World world, int energy) {
+        this(world, energy, new Vector2D(ThreadLocalRandom.current().nextInt(0, world.getWidth()),
+                                         ThreadLocalRandom.current().nextInt(0, world.getHeight())));
     }
 
-    public Animal(World world, Vector2D position) {
-        this(world, position, Genotype.random());
+    public Animal(World world, int energy, Vector2D position) {
+        this(world, energy, position, Genotype.random());
     }
 
-    public Animal(World world, Vector2D position, Genotype genotype) {
-        this(world, position, genotype, DEFAULT_ENERGY);
+    public Animal(World world, int energy, Vector2D position, Genotype genotype) {
+        this(world, energy, position, genotype, Direction.random());
     }
 
-    public Animal(World world, Vector2D position, Genotype genotype, int energy) {
-        this(world, position, genotype, energy, Direction.random());
-    }
-
-    public Animal(World world, Vector2D position, Genotype genotype, int energy, Direction direction) {
+    public Animal(World world, int energy, Vector2D position, Genotype genotype, Direction direction) {
         super(world, position, energy);
         this.direction = direction;
         this.genotype = genotype;
@@ -77,7 +72,15 @@ public class Animal extends BaseEntity {
     }
 
     @Override
-    public String toString() {
-        return "A";
+    public Paint getColor() {
+        if (this.energy < 50) {
+            return Color.rgb(217, 178, 37);
+        }
+
+        if (this.energy < 200) {
+            return Color.rgb(184, 150, 28);
+        }
+
+        return Color.rgb(145, 120, 29);
     }
 }
