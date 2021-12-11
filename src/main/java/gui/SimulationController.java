@@ -3,9 +3,12 @@ package gui;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import model.entity.impl.Animal;
 import model.entity.impl.Grass;
 import model.genotype.Genotype;
@@ -151,6 +154,9 @@ public class SimulationController extends AnimationTimer {
         } else {
             this.start();
         }
+    }
+
+    public void saveLogs(ActionEvent event) {
     }
 
     @Override
