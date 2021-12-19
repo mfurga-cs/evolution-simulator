@@ -3,12 +3,9 @@ package gui;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import model.entity.impl.Animal;
 import model.entity.impl.Grass;
 import model.genotype.Genotype;
@@ -17,6 +14,9 @@ import model.simulation.SimulationConfig;
 import model.world.impl.BoundaryWord;
 import model.world.impl.InfiniteWorld;
 
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class SimulationController extends AnimationTimer {
 
     private SimulationConfig simulationConfig;
+    private List<Log> logs = new ArrayList<Log>();
 
     private Simulation simulationInfinite;
     private MapDrawer mapDrawerInfinite;
@@ -65,7 +66,6 @@ public class SimulationController extends AnimationTimer {
         this.infiniteBox.getChildren().add(mapDrawerInfinite.getCanvas());
         this.boundaryBox.getChildren().add(mapDrawerBoundary.getCanvas());
 
-
         Genotype infiniteGenotype = this.simulationInfinite.getWorld().getEntitiesByType(Animal.class)
                 .stream()
                 .map(a -> a.getGenotype())
@@ -84,16 +84,26 @@ public class SimulationController extends AnimationTimer {
                 .max(Map.Entry.comparingByValue())
                 .get().getKey();
 
-        this.evolutionInfiniteDay = new Label("Evolution day: 0");
-        this.evolutionInfiniteAnimals = new Label("Number of animals: " + this.simulationInfinite.getWorld().getEntitiesByType(Animal.class).size());
-        this.evolutionInfiniteGrass = new Label("Number of grass: " + this.simulationInfinite.getWorld().getEntitiesByType(Grass.class).size());
-        this.evolutionInfiniteEnergyAvg = new Label("Energy avg: " + this.simulationInfinite.getWorld().getEntitiesByType(Animal.class).stream().map(a -> a.getEnergy()).mapToInt(Integer::intValue).summaryStatistics().getAverage());
+        int infiniteDay = this.simulationInfinite.getDay();
+        int infiniteAnimals = this.simulationInfinite.getWorld().getEntitiesByType(Animal.class).size();
+        int infiniteGrass = this.simulationInfinite.getWorld().getEntitiesByType(Grass.class).size();
+        double infiniteEvgEnergy = this.simulationInfinite.getWorld().getEntitiesByType(Animal.class).stream().map(a -> a.getEnergy()).mapToInt(Integer::intValue).summaryStatistics().getAverage();
+
+        int boundaryDay = this.simulationBoundary.getDay();
+        int boundaryAnimals = this.simulationBoundary.getWorld().getEntitiesByType(Animal.class).size();
+        int boundaryGrass = this.simulationBoundary.getWorld().getEntitiesByType(Grass.class).size();
+        double boundaryEvgEnergy = this.simulationBoundary.getWorld().getEntitiesByType(Animal.class).stream().map(a -> a.getEnergy()).mapToInt(Integer::intValue).summaryStatistics().getAverage();
+
+        this.evolutionInfiniteDay = new Label("Evolution day: " + infiniteDay);
+        this.evolutionInfiniteAnimals = new Label("Number of animals: " + infiniteAnimals);
+        this.evolutionInfiniteGrass = new Label("Number of grass: " + infiniteGrass);
+        this.evolutionInfiniteEnergyAvg = new Label("Energy avg: " + infiniteEvgEnergy);
         this.evolutionInfiniteGenotype = new Label("Common genotype: " + infiniteGenotype);
 
-        this.evolutionBoundaryDay = new Label("Evolution day: 0");
-        this.evolutionBoundaryAnimals = new Label("Number of animals: " + this.simulationInfinite.getWorld().getEntitiesByType(Animal.class).size());
-        this.evolutionBoundaryGrass = new Label("Number of grass: " + this.simulationInfinite.getWorld().getEntitiesByType(Grass.class).size());
-        this.evolutionBoundaryEnergyAvg = new Label("Energy avg: " + this.simulationInfinite.getWorld().getEntitiesByType(Animal.class).stream().map(a -> a.getEnergy()).mapToInt(Integer::intValue).summaryStatistics().getAverage());
+        this.evolutionBoundaryDay = new Label("Evolution day: " + boundaryDay);
+        this.evolutionBoundaryAnimals = new Label("Number of animals: " + boundaryAnimals);
+        this.evolutionBoundaryGrass = new Label("Number of grass: " + boundaryGrass);
+        this.evolutionBoundaryEnergyAvg = new Label("Energy avg: " + boundaryEvgEnergy);
         this.evolutionBoundaryGenotype = new Label("Common genotype: " + boundaryGenotype);
 
         this.infiniteBox.getChildren().add(this.evolutionInfiniteDay);
@@ -101,13 +111,14 @@ public class SimulationController extends AnimationTimer {
         this.infiniteBox.getChildren().add(this.evolutionInfiniteGrass);
         this.infiniteBox.getChildren().add(this.evolutionInfiniteEnergyAvg);
         this.infiniteBox.getChildren().add(this.evolutionInfiniteGenotype);
-
+        this.logs.add(new Log("Infinite", infiniteDay, infiniteAnimals, infiniteGrass, infiniteEvgEnergy, infiniteGenotype.toString()));
 
         this.boundaryBox.getChildren().add(this.evolutionBoundaryDay);
         this.boundaryBox.getChildren().add(this.evolutionBoundaryAnimals);
         this.boundaryBox.getChildren().add(this.evolutionBoundaryGrass);
         this.boundaryBox.getChildren().add(this.evolutionBoundaryEnergyAvg);
         this.boundaryBox.getChildren().add(this.evolutionBoundaryGenotype);
+        this.logs.add(new Log("Boundary", boundaryDay, boundaryAnimals, boundaryGrass, boundaryEvgEnergy, boundaryGenotype.toString()));
     }
 
     private void updateStats() {
@@ -131,17 +142,29 @@ public class SimulationController extends AnimationTimer {
                 .get().getKey();
 
 
-        this.evolutionInfiniteDay.setText("Evolution day: " + this.simulationInfinite.getDay());
-        this.evolutionInfiniteAnimals.setText("Number of animals: " + this.simulationInfinite.getWorld().getEntitiesByType(Animal.class).size());
-        this.evolutionInfiniteGrass.setText("Number of grass: " + this.simulationInfinite.getWorld().getEntitiesByType(Grass.class).size());
-        this.evolutionInfiniteEnergyAvg.setText("Energy avg: " + this.simulationInfinite.getWorld().getEntitiesByType(Animal.class).stream().map(a -> a.getEnergy()).mapToInt(Integer::intValue).summaryStatistics().getAverage());
-        this.evolutionInfiniteGenotype.setText("Common genotype: " + infiniteGenotype);
+        int infiniteDay = this.simulationInfinite.getDay();
+        int infiniteAnimals = this.simulationInfinite.getWorld().getEntitiesByType(Animal.class).size();
+        int infiniteGrass = this.simulationInfinite.getWorld().getEntitiesByType(Grass.class).size();
+        double infiniteEvgEnergy = this.simulationInfinite.getWorld().getEntitiesByType(Animal.class).stream().map(a -> a.getEnergy()).mapToInt(Integer::intValue).summaryStatistics().getAverage();
 
-        this.evolutionBoundaryDay.setText("Evolution day: " + this.simulationBoundary.getDay());
-        this.evolutionBoundaryAnimals.setText("Number of animals: " + this.simulationBoundary.getWorld().getEntitiesByType(Animal.class).size());
-        this.evolutionBoundaryGrass.setText("Number of grass: " + this.simulationBoundary.getWorld().getEntitiesByType(Grass.class).size());
-        this.evolutionBoundaryEnergyAvg.setText("Energy avg: " + this.simulationBoundary.getWorld().getEntitiesByType(Animal.class).stream().map(a -> a.getEnergy()).mapToInt(Integer::intValue).summaryStatistics().getAverage());
+        int boundaryDay = this.simulationBoundary.getDay();
+        int boundaryAnimals = this.simulationBoundary.getWorld().getEntitiesByType(Animal.class).size();
+        int boundaryGrass = this.simulationBoundary.getWorld().getEntitiesByType(Grass.class).size();
+        double boundaryEvgEnergy = this.simulationBoundary.getWorld().getEntitiesByType(Animal.class).stream().map(a -> a.getEnergy()).mapToInt(Integer::intValue).summaryStatistics().getAverage();
+
+        this.evolutionInfiniteDay.setText("Evolution day: " + infiniteDay);
+        this.evolutionInfiniteAnimals.setText("Number of animals: " + infiniteAnimals);
+        this.evolutionInfiniteGrass.setText("Number of grass: " + infiniteGrass);
+        this.evolutionInfiniteEnergyAvg.setText("Energy avg: " + infiniteEvgEnergy);
+        this.evolutionInfiniteGenotype.setText("Common genotype: " + infiniteGenotype);
+        this.logs.add(new Log("Infinite", infiniteDay, infiniteAnimals, infiniteGrass, infiniteEvgEnergy, infiniteGenotype.toString()));
+
+        this.evolutionBoundaryDay.setText("Evolution day: " + boundaryDay);
+        this.evolutionBoundaryAnimals.setText("Number of animals: " + boundaryAnimals);
+        this.evolutionBoundaryGrass.setText("Number of grass: " + boundaryGrass);
+        this.evolutionBoundaryEnergyAvg.setText("Energy avg: " + boundaryEvgEnergy);
         this.evolutionBoundaryGenotype.setText("Common genotype: " + boundaryGenotype);
+        this.logs.add(new Log("Boundary", boundaryDay, boundaryAnimals, boundaryGrass, boundaryEvgEnergy, boundaryGenotype.toString()));
     }
 
     public void setSimulationConfig(SimulationConfig simulationConfig) {
@@ -157,6 +180,17 @@ public class SimulationController extends AnimationTimer {
     }
 
     public void saveLogs(ActionEvent event) {
+        if (this.running) {
+            return;
+        }
+        try {
+            FileWriter writer = new FileWriter("logs.csv");
+            String header = "map, day, animals, grass, avgEnergy, genotype\n";
+            String data = this.logs.stream().map(l -> l.toString()).collect(Collectors.joining("\n"));
+            writer.write(header);
+            writer.write(data);
+            writer.close();
+        } catch (Exception ignored) {}
     }
 
     @Override
